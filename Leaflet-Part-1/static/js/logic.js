@@ -8,8 +8,7 @@ d3.json(url).then(function (data) {
 
     createFeatures(data.features);
 
-// Create a function for each feature
-
+// Create a function to run once for each feature in the array; bind a popup with earthquake info to each feature
 
 function createFeatures (earthquakeData) {
 
@@ -18,7 +17,7 @@ function createFeatures (earthquakeData) {
         layer.bindPopup (`<h3> Location: ${feature.properties.place}</h3><hr><p><h2>Magnitude: ${feature.properties.mag} , Depth: ${feature.geometry.coordinates[2]}</h2></p> `);
 }
 
-// Function for marker size
+// Create a function that will run once for each feature in the features array.
 
 function createCircleMarker (feature, latlng) {
 
@@ -33,21 +32,6 @@ function createCircleMarker (feature, latlng) {
     return L.circle(latlng, options);
 }
 
-// 
-
-var earthquakes = L.geoJSON(earthquakeData, {
-    onEachFeature: onEachFeature,
-    pointToLayer: createCircleMarker
-});
-
-//
-
-createMap (earthquakes);
-
-}
-
-//
-
 function chooseColor (depth) {
     if (depth <= 10) return '#33FF99';
     else if (depth > 10 && depth <= 30) return '#33FF33';
@@ -57,8 +41,18 @@ function chooseColor (depth) {
     else return '#FF3333';
 }
 
+// Create a GeoJSON layer that contains the features array on the earthquakeData object.
 
-// Create a map object function
+var earthquakes = L.geoJSON(earthquakeData, {
+    onEachFeature: onEachFeature,
+    pointToLayer: createCircleMarker
+});
+
+// Send earthquakes layer to the createMap function
+
+createMap (earthquakes);
+
+}
 
 function createMap (earthquakes) {
 
@@ -69,7 +63,6 @@ function createMap (earthquakes) {
     var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
       })
-
 
 // Create a basemap object
 
@@ -84,7 +77,7 @@ var overlay = {
     Earthquakes: earthquakes
 };
 
-// Create a map 
+// Create a map object
 
 var map = L.map('map', {
     center: [0, 0],
@@ -92,16 +85,14 @@ var map = L.map('map', {
     layers: [street, earthquakes]
 });
 
-
-// Create a layer control
+// Create a layer control and add it to the map
 
 L.control.layers(basemap, overlay, {
     collapsed: false
 }).addTo(map);
 
 
-//
-
+// Set up the legend
 
 var legend = L.control({position: 'bottomright'});
 
@@ -125,7 +116,8 @@ legend.onAdd = function() {
 };
 
 
-  // Adding the legend to the map
+// Adding the legend to the map
+
   legend.addTo(map);
 
 }
