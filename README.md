@@ -2,5 +2,5 @@
 
 # Challenge completed by Gustavo Pires
 
-# Please refer to the 'index.html', 'plots.js', 'style.css' files. 
+# Please refer to the 'index.html', 'logic.js', 'style.css' files. 
 
